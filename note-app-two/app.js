@@ -3,6 +3,7 @@
 const yargs = require("yargs");
 const addFunc = require("./utils.js");
 const noteFunc = require("./notes.js");
+const { demandOption } = require("yargs");
 
 // console.log(addFunc(3, 2));
 // console.log(noteFunc());
@@ -21,8 +22,21 @@ const noteFunc = require("./notes.js");
 yargs.command({
   command: "add",
   describe: "add a new note",
-  handler: function () {
-    console.log("adding new note");
+  builder: {
+    title: {
+      describe: "note title",
+      demandOption: true,
+      type: "string",
+    },
+    body: {
+      describe: "note body",
+      demandOption: true,
+      type: "string",
+    },
+  },
+  handler: function (argv) {
+    console.log(`body: ${argv.body}`);
+    console.log(`title: ${argv.title}`);
   },
 });
 
@@ -36,7 +50,7 @@ yargs.command({
 
 yargs.command({
   command: "read",
-  describe: "read  note",
+  describe: "read a note",
   handler: function () {
     console.log("reading a note");
   },
@@ -50,4 +64,5 @@ yargs.command({
   },
 });
 
-console.log(yargs.argv);
+yargs.parse();
+// console.log(yargs.argv);
