@@ -1,8 +1,8 @@
 // const validator = require("validator");
 // const fs = require("fs");
 const yargs = require("yargs");
-const addFunc = require("./utils.js");
-const noteFunc = require("./notes.js");
+// const addFunc = require("./utils.js");
+const notes = require("./notes.js");
 const { demandOption } = require("yargs");
 
 // console.log(addFunc(3, 2));
@@ -34,33 +34,46 @@ yargs.command({
       type: "string",
     },
   },
-  handler: function (argv) {
-    console.log(`body: ${argv.body}`);
-    console.log(`title: ${argv.title}`);
+  handler(argv) {
+    notes.addNote(argv.title, argv.body);
   },
 });
 
 yargs.command({
   command: "remove",
   describe: "remove a note",
-  handler: function () {
-    console.log("removing a note");
+  builder: {
+    title: {
+      describe: "note title",
+      demandOption: true,
+      type: "string",
+    },
+  },
+  handler(argv) {
+    notes.removeNote(argv.title);
   },
 });
 
 yargs.command({
   command: "read",
   describe: "read a note",
-  handler: function () {
-    console.log("reading a note");
+  builder: {
+    title: {
+      describe: "note title",
+      demandOption: true,
+      type: "string",
+    },
+  },
+  handler(argv) {
+    notes.readNotes(argv.title);
   },
 });
 
 yargs.command({
   command: "list",
   describe: "list  notes",
-  handler: function () {
-    console.log("listing notes");
+  handler() {
+    notes.listNotes();
   },
 });
 
