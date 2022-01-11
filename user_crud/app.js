@@ -58,4 +58,13 @@ yargs.command({
   },
 });
 
+//read
+yargs.command({
+  command: "read",
+  describe: "show users",
+  handler(argv) {
+    users.readUsers();
+  },
+});
+
 yargs.parse();

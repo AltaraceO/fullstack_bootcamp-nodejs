@@ -54,9 +54,16 @@ const updateUser = (name, newEmail) => {
   saveUsers(users);
 };
 
+const readUsers = () => {
+  const users = getUsers();
+  console.log("All Users");
+  users.forEach((user) => console.log(user.name));
+};
+
 module.exports = {
   getUsers,
   createUser,
   removeUser,
   updateUser,
+  readUsers,
 };
