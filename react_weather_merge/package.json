@@ -5,13 +5,17 @@
   "main": "index.js",
   "scripts": {
     "start": "node app.js",
-    "server": "nodemon src/app.js"
+    "server": "nodemon src/app.js",
+    "client": "npm run start --prefix client_side",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "heroku-postbuild": "npm install --prefix client && npm run build --prefix client_side"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.24.0",
+    "concurrently": "^7.0.0",
     "cors": "^2.8.5",
     "express": "^4.16.4",
     "hbs": "^4.0.1",

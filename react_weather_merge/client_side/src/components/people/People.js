@@ -1,6 +1,6 @@
-// import "./App.css";
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+
+import weatherAPI from "../../api/api";
 
 function People() {
   const [weather, setWeather] = useState("");
@@ -9,22 +9,16 @@ function People() {
 
   const onHandleChange = (e) => {
     setAddress(e.target.value);
-    console.log(address);
   };
 
   const onHandleSubmit = (e) => {
     e.preventDefault();
-    console.log(address);
     setSearchTerm(address);
   };
 
   useEffect(() => {
     const getPpl = async () => {
-      const data = await axios.get(
-        `http://localhost:5000/weather?address=${searchTerm}`
-      );
-
-      console.log(data.data);
+      const data = await weatherAPI.get(`/weather?address=${searchTerm}`);
       setWeather(data.data);
     };
     getPpl();

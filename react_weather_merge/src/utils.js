@@ -1,7 +1,9 @@
 const request = require("request");
+const keys = require("../config/keys");
 
 const geocode = (address, callback) => {
-  const urlMap = `https://api.mapbox.com/geocoding/v5/mapbox.places/${address}.json?access_token=pk.eyJ1IjoiYmlzY3VpdC10aGUtY2F0IiwiYSI6ImNreWE5aDV1ODAzOWMycG84Y3hsNHliN3gifQ.ukP2nuaEqf35iMGHH5HdFA&limit=1`;
+  console.log(keys.GEO_API);
+  const urlMap = `https://api.mapbox.com/geocoding/v5/mapbox.places/${address}.json?access_token=${keys.GEO_API}&limit=1`;
 
   request({ url: urlMap, json: true }, (error, response) => {
     if (error) {
@@ -22,12 +24,16 @@ const geocode = (address, callback) => {
 };
 
 const forecast = (lat, long, func) => {
-  const url = `http://api.weatherstack.com/current?access_key=2dbbdf6ee6219df15f0bc77f217ef491&query=${lat},${long}&units=m`;
+  console.log(long);
+  console.log(lat);
+  console.log(keys.WEATHER_API);
+  const url = `http://api.weatherstack.com/current?access_key=${keys.WEATHER_API}&query=${lat},${long}&units=m`;
 
   request({ url: url, json: true }, (error, response) => {
     if (error) {
       func(`there's an error`);
     } else if (response.body.error) {
+      console.log(response.body.error.info);
       func(`somthin's wrong with yo location`);
     } else {
       func(

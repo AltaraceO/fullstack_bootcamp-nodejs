@@ -1,12 +1,19 @@
+const path = require("path");
 const express = require("express");
-var cors = require("cors");
+const cors = require("cors");
 const { geocode, forecast } = require("./utils");
 
 const app = express();
 app.use(cors());
 
-app.get("/weather", (req, res) => {
-  console.log(req.query);
+//!do i need this here below?
+app.use(express.json());
+
+const publicDirectoryPath = path.join(__dirname, "client/build");
+
+app.use(express.static(publicDirectoryPath));
+
+app.get("/api/weather", (req, res) => {
   const add = req.query.address;
   if (!add) {
     return res.send({
@@ -15,12 +22,12 @@ app.get("/weather", (req, res) => {
   }
   geocode(add, (error, { latitude, longtitude, location } = {}) => {
     if (error) {
-      return res.send({ error });
+      return res.status(400).send({ error });
     }
 
     forecast(latitude, longtitude, (error, forecastData) => {
       if (error) {
-        return res.send({ error });
+        return res.status(400).send({ error });
       }
 
       res.send({
@@ -38,6 +45,8 @@ app.get("*", (req, res) => {
   });
 });
 
-app.listen(5000, () => {
-  console.log("server is up on port 5000");
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server is up on port ${PORT}`);
 });
