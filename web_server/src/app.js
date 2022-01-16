@@ -6,7 +6,7 @@ const { geocode, forecast } = require("./utils");
 const app = express();
 
 //! how to get a route to the index.html
-// console.log(__dirname);
+// console.log(__dirname); 2_ _)underscores
 // console.log(path.join(__dirname, "../public"));
 //?define pathes for express config
 const publicDir = path.join(__dirname, "../public");
