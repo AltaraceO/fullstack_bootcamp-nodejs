@@ -4,6 +4,8 @@ const validator = require("validator");
 const bcrypt = require("bcryptjs");
 //npm i jsonwebtoken
 const jwt = require("jsonwebtoken");
+//bring in tasks for when user is deleted
+const Task = require("./tasks");
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -53,6 +55,13 @@ const userSchema = new mongoose.Schema({
   ],
 });
 
+//*connecting a user to their respective tasks
+userSchema.virtual("tasks", {
+  ref: "Task",
+  localField: "_id",
+  foreignField: "owner",
+});
+//regular function because it is called with a this keyword for the specific instance of a user
 userSchema.methods.generateAuthToken = async function () {
   const user = this;
   const token = jwt.sign({ _id: user._id.toString() }, "uniqueSentence");
@@ -62,6 +71,18 @@ userSchema.methods.generateAuthToken = async function () {
   return token;
 };
 
+//methods for a particular instance of user.
+//res.send automatically JSON.stringify-ies whatever is sent(user). then toJSON manipulates what we want to send
+userSchema.methods.toJSON = function () {
+  const user = this;
+  const userObject = user.toObject();
+
+  delete userObject.password;
+  delete userObject.tokens;
+
+  return userObject;
+};
+//statics on the UPPERCASE User.find...
 userSchema.statics.findByCredentials = async (email, password) => {
   const user = await User.findOne({ email: email });
   if (!user) {
@@ -85,6 +106,13 @@ userSchema.pre("save", async function (next) {
     user.password = await bcrypt.hash(user.password, 8);
   }
 
+  next();
+});
+
+//* Delete user task when user deleted
+userSchema.pre("remove", async function (next) {
+  const user = this;
+  await Task.deleteMany({ owner: user._id });
   next();
 });
 
