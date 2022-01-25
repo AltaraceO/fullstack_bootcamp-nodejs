@@ -73,6 +73,7 @@ userSchema.methods.generateAuthToken = async function () {
 
 //methods for a particular instance of user.
 //res.send automatically JSON.stringify-ies whatever is sent(user). then toJSON manipulates what we want to send
+//This will delete the password and tokens from the userObject that will be returned in each call
 userSchema.methods.toJSON = function () {
   const user = this;
   const userObject = user.toObject();

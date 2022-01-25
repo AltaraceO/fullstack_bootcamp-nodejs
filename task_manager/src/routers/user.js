@@ -18,6 +18,7 @@ router.post("/users", async (req, res) => {
 router.post("/users/login", async (req, res) => {
   try {
     //uppercase on the UPPERCASE User model
+    //Find any user in that matches email and password
     const user = await User.findByCredentials(
       req.body.email,
       req.body.password
