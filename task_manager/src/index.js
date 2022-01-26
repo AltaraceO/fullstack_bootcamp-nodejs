@@ -16,6 +16,17 @@ app.use((req, res, next) => {
   // }
   next();
 });
+//npm i multer
+const multer = require("multer");
+const upload = multer({
+  dest: "images",
+});
+
+//upload.single is a middleware!! in the middle... doing stuff
+//value in single("upload") has to match up exactly to the value of the key-value in Postman
+app.post("/uploads", upload.single("upload"), (req, res) => {
+  res.send();
+});
 
 app.use(express.json());
 app.use(userRouter);

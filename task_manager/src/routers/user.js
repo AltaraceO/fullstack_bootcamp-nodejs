@@ -1,4 +1,6 @@
 const express = require("express");
+//npm i multer
+const multer = require("multer");
 const User = require("../models/user");
 const auth = require("../middleware/auth");
 const router = new express.Router();
@@ -113,6 +115,59 @@ router.delete("/users/me", auth, async (req, res) => {
     res.status(200).send(req.user);
   } catch (e) {
     res.status(500).send(e.message);
+  }
+});
+
+//middleware for uploading files MULTER
+const upload = multer({
+  //destination folder
+  // dest: "avatar",
+  limits: {
+    //restrict to 1megaByte
+    fileSize: 1000000,
+  },
+  fileFilter(req, file, cb) {
+    if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+      return cb(new Error("file must be an image"));
+    }
+    cb(undefined, true);
+  },
+});
+
+router.post(
+  "/users/me/avatar",
+  auth,
+  upload.single("avatar"),
+  async (req, res) => {
+    req.user.avatar = req.file.buffer;
+    await req.user.save();
+    res.send();
+  },
+  //another function at the end that accepts errors from middleware for instance and that needs the params exactly as they are
+  (e, req, res, next) => {
+    res.status(400).send({ error: e.message });
+  }
+);
+
+//delete avatar
+router.delete("/users/me/avatar", auth, async (req, res) => {
+  req.user.avatar = undefined;
+  await req.user.save();
+  res.send();
+});
+
+router.get("/users/:id/avatar", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user || !user.avatar) {
+      throw new Error();
+    }
+    //line below gets the image binary and turn it to an actual image ... the html version of this will be
+    //<img src="http://localhost:3000/users/:id/avatar">
+    res.set("Content-Type", "image/jpg");
+    res.send(user.avatar);
+  } catch (e) {
+    res.status(400).send();
   }
 });
 

@@ -53,6 +53,9 @@ const userSchema = new mongoose.Schema({
       },
     },
   ],
+  avatar: {
+    type: Buffer,
+  },
 });
 
 //*connecting a user to their respective tasks
